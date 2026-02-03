@@ -365,7 +365,7 @@
     },
     {
       "parameters": {
-        "sendTo": "windspeak122@gmail.com",
+        "sendTo": "youremail@gmail.com",
         "subject": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Subject', ``, 'string') }}",
         "message": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Message', ``, 'string') }}",
         "options": {}
@@ -388,12 +388,12 @@
     },
     {
       "parameters": {
-        "sendTo": "windspeak122@gmail.com",
+        "sendTo": "youremail@gmail.com",
         "subject": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Subject', ``, 'string') }}",
         "message": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Message', ``, 'string') }}",
         "options": {
-          "bccList": "eddy891023@yahoo.com.tw",
-          "ccList": "lqi234488@gmail.com "
+          "bccList": "youremail@yahoo.com.tw",
+          "ccList": "youremail@gmail.com "
         }
       },
       "type": "n8n-nodes-base.gmailTool",
