@@ -91,7 +91,7 @@
       "name": "Supabase Vector Store",
       "credentials": {
         "supabaseApi": {
-          "id": "SfNufrHna2wUk04L",
+          "id": "-your-",
           "name": "Supabase account"
         }
       }
@@ -125,7 +125,7 @@
       "name": "Embeddings Ollama",
       "credentials": {
         "ollamaApi": {
-          "id": "pX4vaqaNzsNTslyC",
+          "id": "-your-",
           "name": "Ollama account"
         }
       }
