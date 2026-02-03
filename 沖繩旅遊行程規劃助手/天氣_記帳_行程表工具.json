@@ -60,7 +60,7 @@
     },
     {
       "parameters": {
-        "sendTo": "windspeak122@gmail.com",
+        "sendTo": "your@gmail.com",
         "subject": "=n8n測試信件",
         "message": "={{ $json.output.replace(/\\n/g, '<br>') }}",
         "options": {}
@@ -107,17 +107,17 @@
         "operation": "append",
         "documentId": {
           "__rl": true,
-          "value": "1jHR1AY7AZG4X7_T8hUAxsplI2a1JxQWf0oJY5I20EU4",
+          "value": "--------your--------",
           "mode": "list",
           "cachedResultName": "n8n記帳表",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jHR1AY7AZG4X7_T8hUAxsplI2a1JxQWf0oJY5I20EU4/edit?usp=drivesdk"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/--------your--------/edit?usp=drivesdk"
         },
         "sheetName": {
           "__rl": true,
           "value": "gid=0",
           "mode": "list",
           "cachedResultName": "2025",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jHR1AY7AZG4X7_T8hUAxsplI2a1JxQWf0oJY5I20EU4/edit#gid=0"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/--------your--------/edit#gid=0"
         },
         "columns": {
           "mappingMode": "defineBelow",
@@ -215,7 +215,7 @@
       "parameters": {
         "calendar": {
           "__rl": true,
-          "value": "bbcd4879263649e2bf2195a6ab2fc946db7c255e2f630792173697bc5a363686@group.calendar.google.com",
+          "value": "-----your----------------@group.calendar.google.com",
           "mode": "list",
           "cachedResultName": "n8nt-est"
         },
