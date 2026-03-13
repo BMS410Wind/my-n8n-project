@@ -1,5 +1,3 @@
-## 2026/03/13
-
 # n8n AI 自動化整合專案 (RAG & MCP Ecosystem)
 
 本專案是一個基於 **n8n** 的自動化工作流集合，深度整合了 **Ollama (本地 LLM)**、**Supabase (向量資料庫)** 以及 **MCP (Model Context Protocol)**。專案目標在於建構一個具備知識庫檢索 (RAG)、工具調用 (Function Calling) 與生活助理功能的 AI 自動化環境。
