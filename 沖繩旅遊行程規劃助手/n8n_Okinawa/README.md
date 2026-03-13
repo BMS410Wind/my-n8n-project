@@ -1,5 +1,3 @@
-## 2026/03/13
-
 # n8n AI 自動化整合專案 (RAG & MCP Ecosystem)
 
 本專案是一個基於 **n8n** 的自動化工作流集合，深度整合了 **Ollama (本地 LLM)**、**Supabase (向量資料庫)** 以及 **MCP (Model Context Protocol)**。專案目標在於建構一個具備知識庫檢索 (RAG)、工具調用 (Function Calling) 與生活助理功能的 AI 自動化環境。
@@ -82,7 +80,7 @@ docker compose up -d
 
 ## 🔧 疑難排解 (Troubleshooting)
 
-- **Port 佔用**：請先用`sudo lsof -i -P -n | grep LISTEN`確認11434、5678、4040 端口沒有被其他程式佔用。
+- **Port 佔用**：請先用 `sudo lsof -i -P -n | grep LISTEN` 確認11434、5678、4040 端口沒有被其他程式佔用。
 - **GPU 資源佔用**：若 Ollama 啟動失敗，請先執行 `nvidia-smi` 檢查顯存是否被其他進程佔用，必要時請先終止相關殘留程序。
 - **Webhook 失敗**：請檢查 ngrok 狀態頁面確認網址是否已更新，並將新的網址同步至 LINE Developer Console。
 
