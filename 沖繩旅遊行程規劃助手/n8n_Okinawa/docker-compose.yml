@@ -1,0 +1,70 @@
+version: "3.8"
+
+services:
+  ollama:
+
+    image: ollama/ollama:0.1.37
+    container_name: ollama
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    networks:
+      - ai_net
+    entrypoint: >
+      /bin/sh -c "
+      ollama serve &
+      sleep 5 &&
+      ollama pull mxbai-embed-large:latest &&
+      wait
+      "
+
+  n8n:
+
+    image: n8nio/n8n:1.120.4
+    container_name: n8n
+    ports:
+      - "5678:5678"
+    environment:
+      - GENERIC_TIMEZONE=Asia/Taipei
+    volumes:
+      - n8n_data:/home/node/.n8n
+    networks:
+      - ai_net
+    restart: unless-stopped
+
+  n8n-import:
+
+    image: n8nio/n8n:1.120.4
+    depends_on:
+      - n8n
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - ./workflows:/workflows
+    networks:
+      - ai_net
+    entrypoint: >
+      n8n import:workflow --separate --input=/workflows
+
+  ngrok:
+
+    image: ngrok/ngrok:latest
+    container_name: ngrok
+    restart: unless-stopped
+    command: http n8n:5678
+    environment:
+      - NGROK_AUTHTOKEN=35A5Src02cdpfTpV3FMAid2QIi7_2KTsFQ8HiwyL8DHW4TTqb
+    ports:
+      - "4040:4040"
+    depends_on:
+      - n8n
+    networks:
+      - ai_net
+
+networks:
+  ai_net:
+
+volumes:
+  ollama_data:
+  n8n_data:

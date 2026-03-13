@@ -1,0 +1,492 @@
+{
+  "name": "天氣_記帳_行程表",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=user_id: {{ $json.userId }}\nuser_message:{{ $json.user_message }}\nchatInput:{{ $json.chatInput }}\nuser_input:{{ $('When Executed by Another Workflow').item.json.usrsay }}\n\n",
+        "options": {
+          "systemMessage": "=你是一個智慧型 個人行動助理 (AI Personal Assistant)，你的主要任務是協助使用者處理日常任務，並以清晰、條理化的方式回報結果，此外你的輸出會使用Gmail寄信因此需考慮Gmail排版問題。\n若任務與天氣相關，請使用 OpenWeatherMap 工具獲取資料。\n請以簡潔、可執行、易讀的格式回覆，並提供明確的建議或後續行動。\n\n所有輸出都應該包含：\n1.●任務摘要\n2.●地點 / 時間（若適用)\n3.●主要結果\n4.●分析與建議\n5.●後續可執行動作（若有）\n\n舉個例子:\n\n●任務摘要： 查詢台北未來三天天氣\n●地點 / 時間： 台北市 | 2025/10/15 - 2025/10/17\n●主要結果：\n10/15 ☀️ 晴，最高30°C，最低24°C\n10/16 🌦️ 局部陣雨，最高 28°C，最低 23°C\n10/17 ☁️ 多雲，最高 27°C，最低 22°C\n●分析與建議： 明後天有降雨機率，建議外出攜帶雨具。\n●後續動作： 是否要為你新增「明天提醒帶傘」？\n\n\n若任務與記帳相關，使用Accounting Tool紀錄使用者收支，當使用者要求記帳時必須使用此工具，使用者需要提供花費描述及金額，日期自動記錄當前日期(YYYY/MM/DD)。現在的時間是:{{ $json.currentDate }}\n\nAccounting Tool使用範例:\n日期時間:2025/04/09\n花費描述:手錶\n金額：100\n\n\n若任務與建立行事曆事件相關，使用Create an event in Google Calendar紀錄事件，使用此工具時必須填入事件摘要(summary)。現在的時間是:{{ $json.currentDate }}\n\nGoogle Calendar使用範例:\n使用者輸入:明天早上9點~10點交大有重要會議\n\n●摘要(summary):重要會議\n●地點 / 時間: 交大/9:00AM~10:00AM\n●主要結果: 紀錄明天9:00AM~10:00AM交大有重要會議\n●分析與建議： 根據事件內容，提供有用的背景推論或建議（例如交通、準備事項、提醒等）\n●後續動作： 根據事件內容，給出下一步可能要執行的動作（例如建立提醒、寄信通知、預約場地等\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        -544,
+        -112
+      ],
+      "id": "21678e5c-790d-4f60-a73a-ffdf6445f24a",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "operation": "5DayForecast",
+        "cityName": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('City', `城市名稱轉成英文`, 'string') }}",
+        "language": "=zh_tw"
+      },
+      "type": "n8n-nodes-base.openWeatherMapTool",
+      "typeVersion": 1,
+      "position": [
+        -464,
+        128
+      ],
+      "id": "874113ed-78e2-44ff-ada0-26be78e1eb6b",
+      "name": "OpenWeatherMap",
+      "credentials": {
+        "openWeatherMapApi": {
+          "id": "CoiQkOwNShjY9CgD",
+          "name": "OpenWeatherMap account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -720,
+        128
+      ],
+      "id": "361114ae-ad29-4f44-9b7b-7f3181c345b1",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "nh3r0m3ReElKVrEA",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "windspeak122@gmail.com",
+        "subject": "=n8n測試信件",
+        "message": "={{ $json.output.replace(/\\n/g, '<br>') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        224,
+        -208
+      ],
+      "id": "957d400f-9786-4b81-8d9a-c149ce4e4294",
+      "name": "Send a message",
+      "webhookId": "7a10e6f9-c492-4912-b7f0-9bb749334b5c",
+      "executeOnce": false,
+      "alwaysOutputData": false,
+      "notesInFlow": false,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "KRySO29gHZ5QRQV1",
+          "name": "Gmail account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.user_message }}\n{{ $json.body.events[0].message.id }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -592,
+        128
+      ],
+      "id": "c0dfe468-79a5-4b6a-9a24-6117155f3ba4",
+      "name": "Simple Memory",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "每日記帳工具",
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1jHR1AY7AZG4X7_T8hUAxsplI2a1JxQWf0oJY5I20EU4",
+          "mode": "list",
+          "cachedResultName": "n8n記帳表",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jHR1AY7AZG4X7_T8hUAxsplI2a1JxQWf0oJY5I20EU4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "2025",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jHR1AY7AZG4X7_T8hUAxsplI2a1JxQWf0oJY5I20EU4/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "date": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('date', ``, 'string') }}",
+            "description": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('description', ``, 'string') }}",
+            "amount": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('amount', ``, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "date",
+              "displayName": "date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "description",
+              "displayName": "description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "amount",
+              "displayName": "amount",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        -336,
+        128
+      ],
+      "id": "51cfa0a2-fc84-420b-8321-1df7b2ba44d0",
+      "name": "Accounting Tool",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "EQ8HZOnct5QMxWlB",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "includeInputFields": true,
+          "timezone": "Asia/Taipei"
+        }
+      },
+      "type": "n8n-nodes-base.dateTime",
+      "typeVersion": 2,
+      "position": [
+        -960,
+        -112
+      ],
+      "id": "ff073560-963c-47ae-86a4-a06d522a3d0b",
+      "name": "Date & Time"
+    },
+    {
+      "parameters": {
+        "mode": "markdownToHtml",
+        "markdown": "={{ $json.output }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.markdown",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -208
+      ],
+      "id": "3a56bc65-aafb-4de4-8838-379082474cc0",
+      "name": "Convert Response to an Email-Friendly Format",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "bbcd4879263649e2bf2195a6ab2fc946db7c255e2f630792173697bc5a363686@group.calendar.google.com",
+          "mode": "list",
+          "cachedResultName": "n8nt-est"
+        },
+        "start": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Start', ``, 'string') }}",
+        "end": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('End', ``, 'string') }}",
+        "additionalFields": {
+          "summary": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Summary', ``, 'string') }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        -208,
+        128
+      ],
+      "id": "cf83892e-be09-41ce-b733-19267274ee04",
+      "name": "Create an event in Google Calendar",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "NWcLElzam9R9NSpA",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4948e8f3-8f71-49b0-bf97-d52028841e21",
+              "name": "userId",
+              "value": "={{ $json.body.events[0].source.userId }}",
+              "type": "string"
+            },
+            {
+              "id": "9dc645d5-9662-4cba-8192-6ed27afdbe65",
+              "name": "user_message",
+              "value": "={{ $json.usrsay }}",
+              "type": "string"
+            },
+            {
+              "id": "fe82b024-ac98-441a-88c9-5b86da3a36d2",
+              "name": "replyToken",
+              "value": "={{ $json.body.events[0].replyToken }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1168,
+        -112
+      ],
+      "id": "66eb0dde-bd35-4257-a994-e17a5acd1113",
+      "name": "整理前個節點輸出"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.line.me/v2/bot/message/reply",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"replyToken\": \"{{$('Webhook_txt_in').item.json.body.events[0].replyToken }}\",\n    \"messages\":[\n        {\n            \"type\":\"text\",\n            \"text\":\"{{ $json.output.replaceAll(\"\\n\",\"\\\\n\") }}\"\n        }\n    ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        224,
+        -16
+      ],
+      "id": "50b9888e-5a7b-4bd5-8104-f9ef158ca0cc",
+      "name": "HTTP Request1",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "9fiSUdmcvgObo9Gw",
+          "name": "Bearer Auth (Line OA)"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "cb1ea6a4-ae63-4b5a-99e6-e47658ce6a27",
+              "name": "output",
+              "value": "={{ $json.output }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        0,
+        -16
+      ],
+      "id": "07e337dc-3501-48ac-9b69-d6f4ba16381e",
+      "name": "Edit Fields",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "usrsay"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1360,
+        -112
+      ],
+      "id": "464fc225-8bf5-4e84-b642-27c22085bf84",
+      "name": "When Executed by Another Workflow"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "OpenWeatherMap": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Convert Response to an Email-Friendly Format",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Accounting Tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Date & Time": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert Response to an Email-Friendly Format": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create an event in Google Calendar": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "整理前個節點輸出": {
+      "main": [
+        [
+          {
+            "node": "Date & Time",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "整理前個節點輸出",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Asia/Taipei",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "versionId": "3866f63f-8dd9-46e4-92a3-a7194126d4d5",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "5ca967fb203e82fb04c6a790b96613026cc274f66ac50c77ca500a6f991cdb70"
+  },
+  "id": "U2QLi8j6Mo6KozH6",
+  "tags": []
+}

@@ -1,0 +1,133 @@
+{
+  "name": "MCP server",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "98a95a9e-1d5e-4ae0-bb03-5949bb3988da"
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpTrigger",
+      "typeVersion": 2,
+      "position": [
+        -64,
+        -176
+      ],
+      "id": "39938c4e-5601-45cb-a00b-c86e2f6e072c",
+      "name": "MCP Server Trigger",
+      "webhookId": "98a95a9e-1d5e-4ae0-bb03-5949bb3988da"
+    },
+    {
+      "parameters": {
+        "description": "你可以幫忙查詢天氣、記帳、紀錄行程表",
+        "workflowId": {
+          "__rl": true,
+          "value": "U2QLi8j6Mo6KozH6",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/U2QLi8j6Mo6KozH6",
+          "cachedResultName": "天氣_記帳_行程表"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "usrsay": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('usrsay', ``, 'string') }}"
+          },
+          "matchingColumns": [
+            "usrsay"
+          ],
+          "schema": [
+            {
+              "id": "usrsay",
+              "displayName": "usrsay",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        -64,
+        16
+      ],
+      "id": "e04d2ef4-b42d-4983-8901-d2258b2d8bbd",
+      "name": "Call '天氣_記帳_行程表'"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "TBaLUEWON58CHSmP",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/TBaLUEWON58CHSmP",
+          "cachedResultName": "genimage_tool"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "prompt": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('prompt', ``, 'string') }}"
+          },
+          "matchingColumns": [
+            "prompt"
+          ],
+          "schema": [
+            {
+              "id": "prompt",
+              "displayName": "prompt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        160,
+        16
+      ],
+      "id": "0177a86c-baf4-401f-adcc-7542d8edcaa0",
+      "name": "Call 'genimage_tool'"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Call '天氣_記帳_行程表'": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call 'genimage_tool'": {
+      "ai_tool": [
+        []
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "43f01857-102b-4a7a-aebd-695c2b7ef7e4",
+  "meta": {
+    "instanceId": "5ca967fb203e82fb04c6a790b96613026cc274f66ac50c77ca500a6f991cdb70"
+  },
+  "id": "x6pgDUVmiOUFEXJx",
+  "tags": []
+}
