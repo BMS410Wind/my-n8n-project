@@ -1,3 +1,5 @@
+## 2026/03/13
+
 # n8n AI 自動化整合專案 (RAG & MCP Ecosystem)
 
 本專案是一個基於 **n8n** 的自動化工作流集合，深度整合了 **Ollama (本地 LLM)**、**Supabase (向量資料庫)** 以及 **MCP (Model Context Protocol)**。專案目標在於建構一個具備知識庫檢索 (RAG)、工具調用 (Function Calling) 與生活助理功能的 AI 自動化環境。
@@ -44,7 +46,7 @@ docker compose up -d
 
 ## ⚙️ 工作流 (Workflow) 詳細配置指南
 
-進入 n8n 後 ([http://localhost:5678/)，請針對各工作流手動調整相關憑證](http://localhost:5678/\)，請針對各工作流手動調整相關憑證) (Credentials) 與參數：
+進入 n8n 後 (http://localhost:5678/) ，請針對各工作流手動調整相關憑證 (Credentials) 與參數：
 
 ### 1\. RAG CHAT BOT (核心對話系統)
 
