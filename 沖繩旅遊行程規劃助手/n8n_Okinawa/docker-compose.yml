@@ -54,7 +54,7 @@ services:
     restart: unless-stopped
     command: http n8n:5678
     environment:
-      - NGROK_AUTHTOKEN=35A5Src02cdpfTpV3FMAid2QIi7_2KTsFQ8HiwyL8DHW4TTqb
+      - NGROK_AUTHTOKEN=your_token
     ports:
       - "4040:4040"
     depends_on:
